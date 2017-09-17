@@ -1,15 +1,33 @@
-import { Component } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
+
+declare var google;
 
 @Component({
   selector: 'map',
   templateUrl: 'map.html'
 })
-export class MapComponent {
+export class MapComponent implements OnInit {
 
-  text: string;
-
+public map;
   constructor() {
-    this.text = 'Hello World';
+  }
+
+  ngOnInit(){
+    this.map =this.createMap();
+  }
+
+  createMap(location = new google.maps.LatLng(40.712784,-74.005942)){
+
+    let mapOptions = {
+      center: location,
+      zoom:15,
+      mapTypeId:google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI:true
+    }
+    let mapEl = document.getElementById("map");
+    let map = new google.maps.Map(mapEl,mapOptions);
+
+    return map;
   }
 
 }
