@@ -73,7 +73,7 @@ export class MapComponent implements OnInit {
 
     let mapOptions = {
       center: location,
-      zoom: 5,
+      zoom: 15,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       disableDefaultUI: true
     }
