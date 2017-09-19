@@ -2,10 +2,31 @@
 <div class="wrapper">
     <ion-fab right top>
         <button ion-fab mini color="danger" (click)="renderCurrentLocation()">
-          <ion-icon name="pin"></ion-icon>
+          <ion-icon name="md-locate"></ion-icon>
         </button>
     </ion-fab>
     <div id="map">
 
     </div>
+    <ion-fab top left>
+        <button ion-fab mini color="dark"><ion-icon name="md-flag"></ion-icon></button>
+        <ion-fab-list side="bottom">
+            <form (ngSubmit)="onSubmit()">
+
+                <ion-list>
+                    <ion-item>
+                        <ion-label floating>
+                            <ion-icon name="md-arrow-dropright"></ion-icon> Where to?</ion-label>
+                        <ion-input type="text" name="from"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-label floating>
+                            <ion-icon name="md-arrow-dropright"></ion-icon> Destination</ion-label>
+                        <ion-input type="text" name="destination"></ion-input>
+                    </ion-item>
+                </ion-list>
+
+            </form>
+        </ion-fab-list>
+    </ion-fab>
 </div>
