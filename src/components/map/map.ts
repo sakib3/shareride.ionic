@@ -79,7 +79,11 @@ export class MapComponent implements OnInit {
     }
     let mapEl = document.getElementById("map");
     let map = new google.maps.Map(mapEl, mapOptions);
-
+    var marker = new google.maps.Marker({
+      position: location,
+      icon:'https://png.icons8.com/map-pin/win10/64',
+      map: map
+    });
     return map;
   }
 
