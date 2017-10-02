@@ -1,14 +1,16 @@
 <!-- Generated template for the MapComponent component -->
 <div class="wrapper">
-    <ion-fab right bottom>
+    <ion-fab right style="bottom:15%">
         <button ion-fab mini color="dark" (click)="renderCurrentLocation()">
           <ion-icon name="md-locate"></ion-icon>
         </button>
     </ion-fab>
+    <ion-fab left top>
+        <button ion-fab mini color="dark" (click)="openModal()"><ion-icon name="search"></ion-icon></button>
+    </ion-fab>
     <div id="map">
-
     </div>
-    <ion-fab top left>
+    <!-- <ion-fab top left>
         <button ion-fab mini color="dark"><ion-icon name="md-flag"></ion-icon></button>
         <ion-fab-list side="bottom">
             <form (ngSubmit)="onSubmit()">
@@ -28,5 +30,5 @@
 
             </form>
         </ion-fab-list>
-    </ion-fab>
+    </ion-fab> -->
 </div>

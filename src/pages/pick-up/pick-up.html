@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-grid>
+
+      <ion-row>
+          <ion-buttons left>
+              <button ion-button (click)="dismiss()">
+                  <ion-icon  color="dark" name="ios-backspace"></ion-icon>
+              </button>
+          </ion-buttons>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-1>
+          <ion-icon name="{{target.fromActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
+        </ion-col>
+        <ion-col col-11>
+          <ion-input style="background:#E8E8E8;" padding-left="0" type="text" placeholder="Where From" (focus)="focusFunction('fromActiveIcon')" (focusout)="focusOutFunction('fromActiveIcon')"></ion-input>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col col-1>
+          <ion-icon name="{{target.toActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
+        </ion-col>
+        <ion-col col-11>
+          <ion-input style="background:#E8E8E8;" padding-left="0" type="text" placeholder="Where To" (focus)="focusFunction('toActiveIcon')" (focusout)="focusOutFunction('toActiveIcon')"></ion-input>
+        </ion-col>
+      </ion-row>
+
+    </ion-grid>
+  </ion-toolbar>
+</ion-header>
+
+<ion-fab center bottom>
+    <button ion-button block color="dark" (click)="dismiss()">Done</button>
+</ion-fab>
