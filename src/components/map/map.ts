@@ -32,7 +32,7 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     this.platform.ready()
-      .then((readySource) => this.map = this.createMap());
+      .then((readySource) => this.renderCurrentLocation());
   }
   openModal() {
     const pickUpModal = this.modalCtrl.create(PickUpPage);
