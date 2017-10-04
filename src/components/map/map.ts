@@ -6,6 +6,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { Platform } from 'ionic-angular';
 import { PickUpPage } from '../../pages/pick-up/pick-up';
 declare var google;
+let lastAddressFound = '';
 class LatLng {
   latitude: number;
   longitude: number;
@@ -35,7 +36,7 @@ export class MapComponent implements OnInit {
       .then((readySource) => this.renderCurrentLocation());
   }
   openModal() {
-    const pickUpModal = this.modalCtrl.create(PickUpPage);
+    const pickUpModal = this.modalCtrl.create(PickUpPage,{from: lastAddressFound});
     pickUpModal.present();
   }
   renderCurrentLocation() {
@@ -87,6 +88,7 @@ export class MapComponent implements OnInit {
     return locationObs;
   }
   createMap(latlng = new LatLng(40.712784, -74.005942), address = '') {
+    lastAddressFound = address;
     var infowindow = new google.maps.InfoWindow;
     var location = new google.maps.LatLng(latlng.latitude, latlng.longitude);
     let mapOptions = {

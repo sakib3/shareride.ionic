@@ -15,7 +15,7 @@
           <ion-icon name="{{target.fromActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
         </ion-col>
         <ion-col col-11>
-          <ion-input style="background:#E8E8E8;" padding-left="0" type="text" placeholder="Where From" (focus)="focusFunction('fromActiveIcon')" (focusout)="focusOutFunction('fromActiveIcon')"></ion-input>
+          <ion-input style="background:#E8E8E8;" padding-left="0" type="text" [(ngModel)]="from" placeholder="Where From" (focus)="focusFunction('fromActiveIcon')" (focusout)="focusOutFunction('fromActiveIcon')"></ion-input>
         </ion-col>
       </ion-row>
 

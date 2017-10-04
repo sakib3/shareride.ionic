@@ -7,6 +7,7 @@ import { ViewController, NavController, NavParams } from 'ionic-angular';
 })
 export class PickUpPage {
   target= {fromActiveIcon:"md-radio-button-off",toActiveIcon:"md-radio-button-off"};
+  from = '';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -14,6 +15,7 @@ export class PickUpPage {
   }
 
   ionViewDidLoad() {
+    this.from = this.navParams.get('from');
     console.log('ionViewDidLoad SearchPage');
   }
   dismiss(){
