@@ -6,7 +6,14 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { Platform } from 'ionic-angular';
 import { PickUpPage } from '../../pages/pick-up/pick-up';
 declare var google;
-
+class LatLng {
+  latitude: number;
+  longitude: number;
+  constructor(latitude: number, longitude: number) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
+}
 @Component({
   selector: 'map',
   templateUrl: 'map.html'
@@ -24,10 +31,8 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.platform.ready().then((readySource) => {
-    this.map = this.createMap();
-    // });
-
+    this.platform.ready()
+      .then((readySource) => this.map = this.createMap());
   }
   openModal() {
     const pickUpModal = this.modalCtrl.create(PickUpPage);
@@ -36,24 +41,31 @@ export class MapComponent implements OnInit {
   renderCurrentLocation() {
     this.diagnostic.isLocationEnabled()
       .then((isAvailable) => {
-        console.log('Is available? ' + isAvailable);
-        if (isAvailable) {
+        if (isAvailable)
           this.render();
-        } else {
+        else
           alert('Please Turn On Your GPS!');
-        }
       })
-      .catch((e) => {
-        console.log(e);
-        alert(JSON.stringify(e));
-      });
+      .catch((e) => alert(JSON.stringify(e)));
   }
   render() {
-
     this.getCurrentLocation()
       .subscribe(location => {
-        this.map = this.createMap(location);
+        this.getAddress(location);
       });
+  }
+  getAddress(location: LatLng) {
+    var geocoder = new google.maps.Geocoder;
+    var latlng = { lat: location.latitude, lng: location.longitude };
+    geocoder.geocode({ 'location': latlng }, (results, status) => {
+      if (status === 'OK') {
+        if (results[0])
+          this.map = this.createMap(location, results[0].formatted_address);
+         else
+          alert('No results found');
+      } else
+        alert('Geocoder failed due to: ' + status);
+    });
   }
   getCurrentLocation() {
     let loading = this.loadingCtrl.create({
@@ -63,8 +75,7 @@ export class MapComponent implements OnInit {
     let locationObs = Observable.create(obserable => {
       this.geolocation.getCurrentPosition()
         .then((resp) => {
-          var location = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-          //this.map =this.createMap(location);
+          var location = new LatLng(resp.coords.latitude, resp.coords.longitude);
           obserable.next(location);
           loading.dismiss();
         })
@@ -75,8 +86,9 @@ export class MapComponent implements OnInit {
     });
     return locationObs;
   }
-  createMap(location = new google.maps.LatLng(40.712784, -74.005942)) {
-
+  createMap(latlng = new LatLng(40.712784, -74.005942), address = '') {
+    var infowindow = new google.maps.InfoWindow;
+    var location = new google.maps.LatLng(latlng.latitude, latlng.longitude);
     let mapOptions = {
       center: location,
       zoom: 15,
@@ -91,11 +103,12 @@ export class MapComponent implements OnInit {
       icon: 'https://png.icons8.com/map-pin/win10/64',
       map: map,
     });
-
+    infowindow.setContent(address);
+    infowindow.open(map, marker);
     return map;
   }
 
-  getGoogleMapStyle(){
+  getGoogleMapStyle() {
     return {
       styles: [
         { elementType: 'geometry', stylers: [{ color: '#ebe3cd' }] },
