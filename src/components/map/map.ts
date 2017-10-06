@@ -32,8 +32,8 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.platform.ready()
-      .then((readySource) => this.renderCurrentLocation());
+    // this.platform.ready()
+    //   .then((readySource) => this.renderCurrentLocation());
   }
   openModal() {
     const pickUpModal = this.modalCtrl.create(PickUpPage,{from: lastAddressFound});

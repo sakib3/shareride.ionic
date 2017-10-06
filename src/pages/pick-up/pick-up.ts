@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ViewController, NavController, NavParams } from 'ionic-angular';
-
+declare var google;
 @Component({
   selector: 'page-pick-up',
   templateUrl: 'pick-up.html',
@@ -17,6 +17,10 @@ export class PickUpPage {
   ionViewDidLoad() {
     this.from = this.navParams.get('from');
     console.log('ionViewDidLoad SearchPage');
+    var destination = document.getElementById('destination');
+    var autocompleteDestination = new google.maps.places.Autocomplete(destination);
+    var source = document.getElementById('source');
+    var autocompleteSource = new google.maps.places.Autocomplete(source);
   }
   dismiss(){
     this.viewCtrl.dismiss();
