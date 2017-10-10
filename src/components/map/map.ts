@@ -6,7 +6,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { Platform } from 'ionic-angular';
 import { PickUpPage } from '../../pages/pick-up/pick-up';
 declare var google;
-let lastAddressFound = '';
+var lastAddressFound = '';
 class LatLng {
   latitude: number;
   longitude: number;
@@ -32,42 +32,24 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.platform.ready()
-    //   .then((readySource) => this.renderCurrentLocation());
+      this.platform.ready()
+        .then((readySource) => this.renderCurrentLocation());
   }
-  openModal() {
-    const pickUpModal = this.modalCtrl.create(PickUpPage,{from: lastAddressFound});
-    pickUpModal.present();
-  }
+
   renderCurrentLocation() {
     this.diagnostic.isLocationEnabled()
       .then((isAvailable) => {
         if (isAvailable)
-          this.render();
+          this.getCurrentLocation()
+          .subscribe(location => {
+            this.getAddress(location);
+          });
         else
           alert('Please Turn On Your GPS!');
       })
       .catch((e) => alert(JSON.stringify(e)));
   }
-  render() {
-    this.getCurrentLocation()
-      .subscribe(location => {
-        this.getAddress(location);
-      });
-  }
-  getAddress(location: LatLng) {
-    var geocoder = new google.maps.Geocoder;
-    var latlng = { lat: location.latitude, lng: location.longitude };
-    geocoder.geocode({ 'location': latlng }, (results, status) => {
-      if (status === 'OK') {
-        if (results[0])
-          this.map = this.createMap(location, results[0].formatted_address);
-         else
-          alert('No results found');
-      } else
-        alert('Geocoder failed due to: ' + status);
-    });
-  }
+
   getCurrentLocation() {
     let loading = this.loadingCtrl.create({
       content: 'Loading...'
@@ -87,7 +69,27 @@ export class MapComponent implements OnInit {
     });
     return locationObs;
   }
-  createMap(latlng = new LatLng(40.712784, -74.005942), address = '') {
+
+  getAddress(location: LatLng) {
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+    var geocoder = new google.maps.Geocoder;
+    var latlng = { lat: location.latitude, lng: location.longitude };
+    geocoder.geocode({ 'location': latlng }, (results, status) => {
+      if (status === 'OK') {
+        if (results[0]){
+          lastAddressFound = results[0].formatted_address;
+          this.map = this.createMap(location, lastAddressFound,directionsDisplay);
+        }
+         else
+          alert('No results found');
+      } else
+        alert('Geocoder failed due to: ' + status);
+    });
+  }
+
+
+  createMap(latlng: LatLng, address = '', directionsDisplay = null) {
     lastAddressFound = address;
     var infowindow = new google.maps.InfoWindow;
     var location = new google.maps.LatLng(latlng.latitude, latlng.longitude);
@@ -105,9 +107,97 @@ export class MapComponent implements OnInit {
       icon: 'https://png.icons8.com/map-pin/win10/64',
       map: map,
     });
+    if(directionsDisplay!=null)
+      directionsDisplay.setMap(map);
     infowindow.setContent(address);
     infowindow.open(map, marker);
     return map;
+  }
+
+  calculateAndDisplayRoute(directionsService, directionsDisplay, origin, destination) {
+    directionsService.route({
+      origin: origin,
+      destination: destination,
+      travelMode: 'DRIVING'
+    }, function(response, status) {
+      if (status === 'OK') {
+        directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
+  }
+
+  openModal() {
+    const pickUpModal = this.modalCtrl.create(PickUpPage,{source: lastAddressFound});
+    pickUpModal.onDidDismiss(data => {
+      if(data)
+        this.displayRoute(data);
+    });
+    pickUpModal.present();
+  }
+
+
+  displayRoute(routeData){
+    var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer;
+
+    let mapOptions = {
+      center: {lat: 41.85, lng: -87.65},
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true
+    }
+    let mapEl = document.getElementById("map");
+    let map = new google.maps.Map(mapEl, mapOptions);
+    map.setOptions(this.getGoogleMapStyle());
+    directionsDisplay.setMap(map);
+    directionsDisplay.addListener('directions_changed', function() {
+      document.getElementById('total').style.display = "block";
+      var result = directionsDisplay.getDirections();
+      var total = 0;
+      var totalDuration = 0;
+      var myroute = result.routes[0];
+      for (var i = 0; i < myroute.legs.length; i++) {
+        total += myroute.legs[i].distance.value;
+        totalDuration += myroute.legs[i].duration.value;
+      }
+      total = total / 1000;
+      //totalDuration = this.secToHourMin(totalDuration);
+      var secondsForMin = totalDuration%(3600);
+      var hours = Math.floor(totalDuration/3600);
+      var mins = Math.floor(secondsForMin/60);
+
+      document.getElementById('totaldistance').innerHTML = total+ ' km';
+      document.getElementById('totalduration').innerHTML = hours +' hours '+ mins + ' minutes';
+      //this.computeTotalDistance(directionsDisplay.getDirections());
+    });
+    this.calculateAndDisplayRoute(directionsService, directionsDisplay,routeData.source,routeData.destination);
+
+
+  }
+  searchRide(){
+
+  }
+  secToHourMin(seconds){
+    var secondsForMin = seconds%(3600);
+    var hours = Math.floor(seconds/3600);
+    var mins = Math.floor(secondsForMin/60);
+    return hours +' hours '+ mins + ' minutes';
+  }
+  computeTotalDistance(result) {
+
+    console.log(result);
+    var total = 0;
+    var myroute = result.routes[0];
+    for (var i = 0; i < myroute.legs.length; i++) {
+      total += myroute.legs[i].distance.value;
+    }
+    total = total / 1000;
+    var data = '<ion-icon name="leaf" item-start></ion-icon>'
+    +total+
+    '<ion-icon name="rose" item-end></ion-icon>';
+    document.getElementById('total').innerHTML = data;
   }
 
   getGoogleMapStyle() {

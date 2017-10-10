@@ -10,30 +10,31 @@
           </ion-buttons>
       </ion-row>
 
-      <ion-row>
-        <ion-col col-1>
-          <ion-icon name="{{target.fromActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
-        </ion-col>
-        <ion-col col-11>
-          <!-- <ion-input style="background:#E8E8E8;" padding-left="0" type="text" [(ngModel)]="from" placeholder="Where From" (focus)="focusFunction('fromActiveIcon')" (focusout)="focusOutFunction('fromActiveIcon')"></ion-input> -->
-          <input id="source" style="border: 0;width:100%;padding: 10px;background:#E8E8E8;" [(ngModel)]="from" type="text" (onfocus)="focusFunction('fromActiveIcon')" (onfocusout)="focusOutFunction('fromActiveIcon')" placeholder="Where From"/>
-        </ion-col>
-      </ion-row>
 
-      <ion-row>
-        <ion-col col-1>
-          <ion-icon name="{{target.toActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
-        </ion-col>
-        <ion-col col-11>
-          <!-- <ion-input id="destination" style="background:#E8E8E8;" padding-left="0" type="text" placeholder="Where To" (focus)="focusFunction('toActiveIcon')" (focusout)="focusOutFunction('toActiveIcon')"></ion-input> -->
-          <input id="destination" style="border: 0;width:100%;padding: 10px;background:#E8E8E8;" type="text" (onfocus)="focusFunction('toActiveIcon')" (onfocusout)="focusOutFunction('toActiveIcon')"placeholder="Where To"/>
-        </ion-col>
-      </ion-row>
+        <ion-row>
+          <ion-col col-1>
+            <ion-icon name="{{target.fromActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
+          </ion-col>
+          <ion-col col-11>
+            <!-- <ion-input style="background:#E8E8E8;" padding-left="0" type="text" [(ngModel)]="from" placeholder="Where From" (focus)="focusFunction('fromActiveIcon')" (focusout)="focusOutFunction('fromActiveIcon')"></ion-input> -->
+            <input id="source" name="source" style="border: 0;width:100%;padding: 10px;background:#E8E8E8;"  type="text" [(ngModel)]='source'(onfocus)="focusFunction('fromActiveIcon')" (onfocusout)="focusOutFunction('fromActiveIcon')" placeholder="Where From"/>
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col col-1>
+            <ion-icon name="{{target.toActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
+          </ion-col>
+          <ion-col col-11>
+            <!-- <ion-input id="destination" style="background:#E8E8E8;" padding-left="0" type="text" placeholder="Where To" (focus)="focusFunction('toActiveIcon')" (focusout)="focusOutFunction('toActiveIcon')"></ion-input> -->
+            <input id="destination" name="destination" style="border: 0;width:100%;padding: 10px;background:#E8E8E8;" type="text" (onfocus)="focusFunction('toActiveIcon')" (onfocusout)="focusOutFunction('toActiveIcon')"placeholder="Where To"/>
+          </ion-col>
+        </ion-row>
 
     </ion-grid>
   </ion-toolbar>
 </ion-header>
 
 <ion-fab center bottom>
-    <button ion-button block color="dark" (click)="dismiss()">Done</button>
+    <button ion-button block color="dark" (click)="onSubmit()">Done</button>
 </ion-fab>
