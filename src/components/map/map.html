@@ -5,8 +5,11 @@
           <ion-icon name="md-locate"></ion-icon>
         </button>
     </ion-fab>
-    <ion-fab left top>
+    <ion-fab right top>
         <button ion-fab mini color="dark" (click)="openModal()"><ion-icon name="search"></ion-icon></button>
+    </ion-fab>
+    <ion-fab left top>
+        <button ion-fab mini color="dark" (click)="openModal()"><ion-icon name="md-share"></ion-icon></button>
     </ion-fab>
     <ion-fab  [hidden]="!showSearchRideButton" bottom style="margin-left:30%">
         <button ion-button icon-start color="dark" (click)="searchRide()"><ion-icon name="ios-checkmark"></ion-icon>Search Ride</button>

@@ -31,10 +31,36 @@
           </ion-col>
         </ion-row>
 
+        <ion-row>
+          <ion-col col-1>
+            <ion-icon name="{{target.toActiveIcon}}" color="dark" style="margin-top:70%"></ion-icon>
+          </ion-col>
+          <ion-col col-9>
+            <!-- <ion-input id="destination" style="background:#E8E8E8;" padding-left="0" type="text" placeholder="Where To" (focus)="focusFunction('toActiveIcon')" (focusout)="focusOutFunction('toActiveIcon')"></ion-input> -->
+            <input id="stopover" name="stopover" style="border: 0;width:100%;padding: 10px;background:#E8E8E8;" type="text" (onfocus)="focusFunction('toActiveIcon')" (onfocusout)="focusOutFunction('toActiveIcon')"placeholder="Add Stopover"/>
+
+          </ion-col>
+          <ion-col col-2>
+            <!-- <ion-input id="destination" style="background:#E8E8E8;" padding-left="0" type="text" placeholder="Where To" (focus)="focusFunction('toActiveIcon')" (focusout)="focusOutFunction('toActiveIcon')"></ion-input> -->
+            <ion-fab>
+              <button style="margin:0;" ion-fab mini color="light" (click)="addStopOver()"><ion-icon name="md-add-circle"></ion-icon></button>
+            </ion-fab>
+
+          </ion-col>
+        </ion-row>
+
     </ion-grid>
   </ion-toolbar>
 </ion-header>
+<ion-content>
+    <span id="selectedStopover">
+        <ion-chip style="margin:5px;" color="secondary" *ngFor="let stopover of stopOverArray" >
+            <ion-label color="dark">{{stopover}}</ion-label>
+          </ion-chip>
+    </span>
 
-<ion-fab center bottom>
-    <button ion-button block color="dark" (click)="onSubmit()">Done</button>
-</ion-fab>
+    <ion-fab center bottom>
+        <button ion-button block color="dark" (click)="onSubmit()">Done</button>
+    </ion-fab>
+</ion-content>
+

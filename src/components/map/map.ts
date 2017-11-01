@@ -7,6 +7,7 @@ import { Platform } from 'ionic-angular';
 import { PickUpPage } from '../../pages/pick-up/pick-up';
 declare var google;
 var lastAddressFound = '';
+var currentLocation : LatLng = null;
 class LatLng {
   latitude: number;
   longitude: number;
@@ -35,8 +36,8 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.platform.ready()
-    //   .then((readySource) => this.renderCurrentLocation());
+    this.platform.ready()
+      .then((readySource) => this.renderCurrentLocation());
   }
 
   renderCurrentLocation() {
@@ -45,7 +46,9 @@ export class MapComponent implements OnInit {
         if (isAvailable)
           this.getCurrentLocation()
             .subscribe(location => {
-              this.getAddress(location);
+              currentLocation = new LatLng(location.latitude, location.longitude);
+              this.createMap(currentLocation);
+              this.getAddress(currentLocation);
             });
         else
           alert('Please Turn On Your GPS!');
@@ -73,17 +76,62 @@ export class MapComponent implements OnInit {
     return locationObs;
   }
 
+  createMap(location: LatLng) {
+    this.setMap(location);
+    document.getElementById('total').style.display = "none";
+    this.drawMarker(location,this.map);
+  }
+
+  findRidesNearby(location: LatLng){
+    var locations = this.generateRandomPoints(location);
+    var icon =  "https://png.icons8.com/barber-chair/color/48";
+    var self = this;
+    locations.forEach(l => self.drawCustomMarker(l,self.map,icon));
+  }
+
+  setMap(location:LatLng){
+    let mapEl = document.getElementById("map");
+    let mapOptions = {
+          center: new google.maps.LatLng(location.latitude, location.longitude),
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          disableDefaultUI: true
+    }
+    this.map = new google.maps.Map(mapEl, mapOptions);
+  }
+
+  drawMarker(location:LatLng, map){
+    var markerOption : any = {
+      position: new google.maps.LatLng(location.latitude, location.longitude),
+      map: map
+    }
+    new google.maps.Marker(markerOption);
+  }
+
+  drawCustomMarker(location, map, icon){
+    new google.maps.Marker({
+      position: location,
+      map: map,
+      icon: icon
+    });
+  }
+
+  getRandomArbitrary(number) {
+    var sign = Math.floor (Math.random()) %2 == 0 ? 1 : -1;
+    return Math.random()* .008*(sign) + number;
+  }
+
   getAddress(location: LatLng) {
     var directionsService = new google.maps.DirectionsService;
     var directionsDisplay = new google.maps.DirectionsRenderer;
     var geocoder = new google.maps.Geocoder;
     var latlng = { lat: location.latitude, lng: location.longitude };
-
+    var self = this;
     geocoder.geocode({ 'location': latlng }, (results, status) => {
       if (status === 'OK') {
         if (results[0]) {
           lastAddressFound = results[0].formatted_address;
-          this.map = this.createMap(location, lastAddressFound, directionsDisplay);
+          //this.createMap(location);
         }
         else
           alert('No results found');
@@ -93,39 +141,30 @@ export class MapComponent implements OnInit {
   }
 
 
-  createMap(latlng: LatLng, address = '', directionsDisplay = null) {
-    lastAddressFound = address;
-    var infowindow = new google.maps.InfoWindow;
-    var location = new google.maps.LatLng(latlng.latitude, latlng.longitude);
-    let mapOptions = {
-      center: location,
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      disableDefaultUI: true
+  generateRandomPoints(location:LatLng) : Array<any>{
+    var point = new google.maps.LatLng(location.latitude, location.longitude);
+    var points = new Array();
+    for(let i = 0; i < Math.floor(Math.random()*16+4); i++){
+      var spherical = google.maps.geometry.spherical;
+      var north = spherical.computeOffset(point, this.getRandomRange(0,100), this.getRandomRange(0,89));
+      var west  = spherical.computeOffset(point, this.getRandomRange(200,300), this.getRandomRange(-89,0));
+      var south = spherical.computeOffset(point, this.getRandomRange(300,400), this.getRandomRange(90,180));
+      var east  = spherical.computeOffset(point, this.getRandomRange(400,500), this.getRandomRange(181,270));
+      points.push(north);
+      points.push(west);
+      points.push(south);
+      points.push(east);
     }
-    //let mapOptions = this.getMapOptions();
-    let mapEl = document.getElementById("map");
-    let map = new google.maps.Map(mapEl, mapOptions);
-    map.setOptions(this.getGoogleMapStyle());
-    var marker = new google.maps.Marker({
-      position: location,
-      icon: 'https://png.icons8.com/map-pin/win10/64',
-      map: map,
-    });
-    if (directionsDisplay != null)
-      directionsDisplay.setMap(map);
-    infowindow.setContent(address);
-    infowindow.open(map, marker);
-    return map;
+    return points;
   }
+
 
   openModal() {
     const pickUpModal = this.modalCtrl.create(PickUpPage, { source: lastAddressFound });
     pickUpModal.onDidDismiss(data => {
       if (data)
         this.displayRoute(data);
-      else
-        this.showSearchRideButton = true;
+      this.showSearchRideButton = true;
     });
     this.showSearchRideButton = false;
     pickUpModal.present();
@@ -141,7 +180,7 @@ export class MapComponent implements OnInit {
     };
   }
 
-  setMap(){
+  initMap(){
     let mapOptions = this.getMapOptions();
     let mapEl = document.getElementById("map");
     let map = new google.maps.Map(mapEl, mapOptions);
@@ -149,10 +188,14 @@ export class MapComponent implements OnInit {
     this.map = map;
   }
 
+  searchRide() {
+    this.findRidesNearby(currentLocation);
+  }
+
   displayRoute(routeData) {
     var directionsService = new google.maps.DirectionsService;
     var directionsDisplay = new google.maps.DirectionsRenderer;
-    this.setMap();
+    this.initMap();
     directionsDisplay.setMap(this.map);
     var self = this;
     //this.diplayTotalDistanceTime(directionsDisplay.getDirections())
@@ -160,14 +203,15 @@ export class MapComponent implements OnInit {
       'directions_changed',
       () => self.diplayTotalDistanceTime(directionsDisplay.getDirections())
     );
-    this.calculateAndDisplayRoute(directionsService, directionsDisplay, routeData.source, routeData.destination);
+    this.calculateAndDisplayRoute(directionsService, directionsDisplay, routeData.source, routeData.destination, routeData.stopover);
     this.do(routeData.source, routeData.destination);
   }
 
-  calculateAndDisplayRoute(directionsService, directionsDisplay, origin, destination) {
+  calculateAndDisplayRoute(directionsService, directionsDisplay, origin, destination, waypoints) {
     directionsService.route({
       origin: origin,
       destination: destination,
+      waypoints: waypoints,
       travelMode: 'DRIVING',
       optimizeWaypoints: true,
       //stopover: true
@@ -190,18 +234,21 @@ export class MapComponent implements OnInit {
     totalDistance += myroute.legs[i].distance.value;
     totalDuration += myroute.legs[i].duration.value;
   }
-  this.routeObject.legs[0].steps.forEach(point => {
-    that.addMarker(point.start_location);
-  });
+
   var data = that.getTotal(totalDistance, totalDuration);
+  this.showSearchRideButton = true;
   that.pushDatatoDom(data);
  }
+
+
+getRandomRange(min,max){
+  return Math.floor(Math.random()*max)+min;
+}
 
   pushDatatoDom(data) {
     document.getElementById('total').style.display = "block";
     document.getElementById('totaldistance').innerHTML = data.totaldistance + ' km';
     document.getElementById('totalduration').innerHTML = data.totalduration.hours + ' hours ' + data.totalduration.mins + ' minutes';
-    this.showSearchRideButton = true;
   }
 
   getTotal(distanceInMeters, totalTimeInSeconds): any {
@@ -215,13 +262,7 @@ export class MapComponent implements OnInit {
     };
   }
 
-  searchRide() {
-    console.log(this.routeObject);
-  }
-
-
   do(origin, destination) {
-
        var service = new google.maps.DistanceMatrixService;
        service.getDistanceMatrix({
          origins: [origin],
@@ -231,110 +272,50 @@ export class MapComponent implements OnInit {
          avoidHighways: false,
          avoidTolls: false,
        }, function (response, status) {
-         if (status !== 'OK') {
-           alert('Error was: ' + status);
-         } else {
-
-           console.log(response);
-           var geocoder = new google.maps.Geocoder;
-         }
-
-       });
-    }
-  // searchRide() {
-
-    // var that = this;
-    // var i = 0;
-    // this.routeObject.legs[0].steps.forEach(point => {
-    //   that.addMarker(point.start_location, point.instructions);
-    //   // console.log(point.start_location)
-    // });
-    // console.log(this.routeObject);
-
-  //   var that = this;
-  //   var polygon = this.getPolygon();
-  //   polygon.forEach((point) => {
-  //     console.log(point)
-  //     new google.maps.Marker({
-  //       position: point,
-  //       map: this.map,
-  //       label: "------"
-  //     })
-  //   });
-  // }
-
-  getPolygon() {
-    var route = this.routeObject;
-    var lat1 = route.legs[0].start_location.lat();
-    var lon1 = route.legs[0].start_location.lng();
-    var lat2 = route.legs[route.legs.length - 1].end_location.lat();
-    var lon2 = route.legs[route.legs.length - 1].end_location.lng();
-    var polygon = [];
-    console.log(lat1 - 2)
-    console.log(lat1)
-    console.log(lat1 - 2.0)
-    polygon = polygon.concat(this.getLatLng2(Math.floor(lat1), lon1));
-    // polygon = polygon.concat( this.getLatLng2(lat1+2, lon1+2));
-    // polygon = polygon.concat( this.getLatLng2(lat2-2, lon2-2));
-    // polygon = polygon.concat( this.getLatLng2(lat2+2, lon2+2));
-    return polygon;
+           if (status !== 'OK')
+             alert('Error was: ' + status);
+           else
+             var geocoder = new google.maps.Geocoder;
+      });
   }
+
   getLatLng2(lat, lon) {
     return new google.maps.LatLng(lat, lon);
   }
-  //var route = this.lastRoute;
 
-  // var lat1 = route.legs[0].start_location.lat();
-  // var lon1 = route.legs[0].start_location.lng();
-  // var lat2 = route.legs[route.legs.length-1].start_location.lat();
-  // var lon2 = route.legs[route.legs.length-1].start_location.lng();
-  // //var location = new google.maps.LatLng(latlng.latitude, latlng.longitude);
-  // for(let i=0;i<1;i++){
-  //   //var randomLocation = this.getRandomPositionFromLatLon(lat1, lon1, lat2, lon2);
+  addMarker(location, label = "", icon = null) {
+    let mapEl = document.getElementById("map");
 
+    let mapOptions = {
+      center: location,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true
+    }
 
-  //   this.addMarker(new google.maps.LatLng(lat1, lon1), 'xxxx');
-  //   this.addMarker(new google.maps.LatLng(lat2, lon2), 'YYYY',);
-  // }
-  // getRandomPositionFromLatLon(lat1, lon1, lat2, lon2){
-  //   var lat = this.randomFloatFromInterval(lat1, lat2);
-  //   var lon = this.randomFloatFromInterval(lon1, lon2);
-  //   return new google.maps.LatLng(lat, lon);
-  // }
-  // randomFloatFromInterval(min, max) {
-  //   var copymin = min;
-  //   if (min > max) {
-  //     min = max;
-  //     max = copymin;
-  //   }
-  //   return (Math.random() * (max - min + 1) + min);
-  // }
-  addMarker(location, label = "") {
+    let map = new google.maps.Map(mapEl, mapOptions);
+    //map.setOptions(this.getGoogleMapStyle());
     var that = this;
-    new google.maps.Marker({
+    var markerOptions : any = {
       position: location,
-      map: that.map,
-      //label:label,
-    });
-    // let map = new google.maps.Map(document.getElementById('map'), {
-    //   center:location
-    // });
+      map: map,
+      label:label,
+    };
 
-    // var marker = new google.maps.Marker({
-    //   position: location,
-    //   map: map,
-    // });
-    // this.map = map;
+
+    if( icon != null )
+      markerOptions.icon = icon;
+    new google.maps.Marker(markerOptions);
   }
+
   secToHourMin(seconds) {
     var secondsForMin = seconds % (3600);
     var hours = Math.floor(seconds / 3600);
     var mins = Math.floor(secondsForMin / 60);
     return hours + ' hours ' + mins + ' minutes';
   }
-  computeTotalDistance(result) {
 
-    console.log(result);
+  computeTotalDistance(result) {
     var total = 0;
     var myroute = result.routes[0];
     for (var i = 0; i < myroute.legs.length; i++) {
