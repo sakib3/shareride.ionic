@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { PickUpPage } from '../pages/pick-up/pick-up';
+import { SharePostPage } from '../pages/share-post/share-post';
 import { MapComponent } from '../pages/../components/map/map';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
@@ -15,6 +16,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
     MyApp,
     HomePage,
     PickUpPage,
+    SharePostPage,
     MapComponent
   ],
   imports: [
@@ -25,7 +27,8 @@ import { Diagnostic } from '@ionic-native/diagnostic';
   entryComponents: [
     MyApp,
     HomePage,
-    PickUpPage
+    PickUpPage,
+    SharePostPage
   ],
   providers: [
     StatusBar,

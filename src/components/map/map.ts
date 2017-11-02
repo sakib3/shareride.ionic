@@ -5,6 +5,8 @@ import { LoadingController, NavController, ModalController } from 'ionic-angular
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Platform } from 'ionic-angular';
 import { PickUpPage } from '../../pages/pick-up/pick-up';
+import { SharePostPage } from '../../pages/share-post/share-post';
+
 declare var google;
 var lastAddressFound = '';
 var currentLocation : LatLng = null;
@@ -159,6 +161,17 @@ export class MapComponent implements OnInit {
   }
 
 
+  sharePostModal() {
+    const pickUpModal = this.modalCtrl.create(SharePostPage, { source: lastAddressFound });
+    pickUpModal.onDidDismiss(data => {
+      if (data)
+        this.displayRoute(data);
+      //this.showSearchRideButton = true;
+    });
+    this.showSearchRideButton = false;
+    pickUpModal.present();
+  }
+
   openModal() {
     const pickUpModal = this.modalCtrl.create(PickUpPage, { source: lastAddressFound });
     pickUpModal.onDidDismiss(data => {
@@ -205,6 +218,7 @@ export class MapComponent implements OnInit {
     );
     this.calculateAndDisplayRoute(directionsService, directionsDisplay, routeData.source, routeData.destination, routeData.stopover);
     this.do(routeData.source, routeData.destination);
+    this.findRidesNearby(currentLocation);
   }
 
   calculateAndDisplayRoute(directionsService, directionsDisplay, origin, destination, waypoints) {
