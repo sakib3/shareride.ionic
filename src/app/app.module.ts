@@ -11,9 +11,13 @@ import { SharePostPage } from '../pages/share-post/share-post';
 import { MapComponent } from '../pages/../components/map/map';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
+import { AuthServiceProvider } from '../providers/auth-service/auth-service';
+import { LoginPage } from '../pages/login/login';
+
 @NgModule({
   declarations: [
     MyApp,
+    LoginPage,
     HomePage,
     PickUpPage,
     SharePostPage,
@@ -22,10 +26,12 @@ import { Diagnostic } from '@ionic-native/diagnostic';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp)
+    //IonicModule.forRoot(LoginPage)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
+    LoginPage,
     HomePage,
     PickUpPage,
     SharePostPage
@@ -35,7 +41,8 @@ import { Diagnostic } from '@ionic-native/diagnostic';
     SplashScreen,
     Geolocation,
     Diagnostic,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    AuthServiceProvider
   ]
 })
 export class AppModule {}

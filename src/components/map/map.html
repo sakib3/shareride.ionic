@@ -1,19 +1,20 @@
 <!-- Generated template for the MapComponent component -->
 <div class="wrapper">
+
     <ion-fab left style="bottom:10%">
         <button ion-fab mini color="dark" (click)="renderCurrentLocation()">
           <ion-icon name="md-locate"></ion-icon>
         </button>
     </ion-fab>
+
     <ion-fab right top>
-        <button ion-fab mini color="dark" (click)="openModal()"><ion-icon name="search"></ion-icon></button>
+        <button ion-fab mini color="dark" (click)="pickUpModal()"><ion-icon name="search"></ion-icon></button>
     </ion-fab>
+
     <ion-fab left top>
         <button ion-fab mini color="dark" (click)="sharePostModal()"><ion-icon name="md-share"></ion-icon></button>
     </ion-fab>
-    <ion-fab  [hidden]="!showSearchRideButton" bottom style="margin-left:30%">
-        <button ion-button icon-start color="dark" (click)="searchRide()"><ion-icon name="ios-checkmark"></ion-icon>Search Ride</button>
-    </ion-fab>
+
     <ion-fab right top>
       <span id="total" style="display:none">
           <ion-list>
@@ -28,27 +29,8 @@
             </ion-list>
       </span>
     </ion-fab>
+
     <div id="map">
     </div>
-    <!-- <ion-fab top left>
-        <button ion-fab mini color="dark"><ion-icon name="md-flag"></ion-icon></button>
-        <ion-fab-list side="bottom">
-            <form (ngSubmit)="onSubmit()">
 
-                <ion-list>
-                    <ion-item>
-                        <ion-label floating>
-                            <ion-icon name="md-arrow-dropright"></ion-icon> Where to?</ion-label>
-                        <ion-input type="text" name="from"></ion-input>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label floating>
-                            <ion-icon name="md-arrow-dropright"></ion-icon> Destination</ion-label>
-                        <ion-input type="text" name="destination"></ion-input>
-                    </ion-item>
-                </ion-list>
-
-            </form>
-        </ion-fab-list>
-    </ion-fab> -->
 </div>

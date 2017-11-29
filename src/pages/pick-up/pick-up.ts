@@ -3,6 +3,19 @@ import { ViewController, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup } from '@angular/forms';
 declare var google;
 var route= {source : '', destination: '', stopover:[]};
+
+class FindRideModel{
+   name: string;
+   from: string;
+   destinationLocation: Array<any>;
+   to: string;
+   sourceLocation: Array<any>;
+   journeyFrequency: string;
+   daysOfTravel: Array<string>;
+   journeyDate: string;
+   returnDate: string;
+   constructor(){}
+}
 @Component({
   selector: 'page-pick-up',
   templateUrl: 'pick-up.html',
@@ -12,11 +25,22 @@ export class PickUpPage {
   source:string = '';
   stopover:string;
   stopOverArray:Array<string> = [];
+  days:Array<any> = [
+    { day:"Sat", checked: true },
+    { day:"Sun", checked: true },
+    { day:"Mon", checked: true },
+    { day:"Tue", checked: true },
+    { day:"Wed", checked: true },
+    { day:"Thu", checked: true },
+    { day:"Fri", checked: true }];
+  isReturnDay = false;
+  model: FindRideModel;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private viewCtrl: ViewController,
     ) {
+      this.model = new FindRideModel();
   }
 
   addStopOver(){
@@ -39,11 +63,19 @@ export class PickUpPage {
       self.stopover = autocompleteStopover.getPlace().formatted_address;
       console.log(self.stopover);
     });
-    google.maps.event.addListener(autocompleteDestination, 'place_changed', function () {
-      route.destination = autocompleteDestination.getPlace().formatted_address;
-    });
+
     google.maps.event.addListener(autocompleteSource, 'place_changed', function () {
+      var sourceLocation = autocompleteSource.getPlace().geometry.location;
+      self.model.sourceLocation = [sourceLocation.lat(), sourceLocation.lng()];
       route.source = autocompleteSource.getPlace().formatted_address;
+      self.model.from = route.source;
+    });
+
+    google.maps.event.addListener(autocompleteDestination, 'place_changed', function () {
+      var destinationLocation = autocompleteDestination.getPlace().geometry.location;
+      self.model.destinationLocation = [destinationLocation.lat(), destinationLocation.lng()];
+      route.destination = autocompleteDestination.getPlace().formatted_address;
+      self.model.to = route.destination;
     });
   }
   dismiss(){
@@ -63,7 +95,11 @@ export class PickUpPage {
       location: this.stopOverArray[i],
       stopover: true
     });
-    route.stopover = waypts;
+    //route.stopover = waypts;
+    let checkedDays = this.days.filter((d)=> d.checked == true);
+    if(checkedDays.length > 0)
+      this.model.daysOfTravel = checkedDays.map((d) => d.day);
+    console.log(this.model);
     this.viewCtrl.dismiss(route);
   }
 }

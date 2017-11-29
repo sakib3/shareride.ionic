@@ -1,16 +1,20 @@
 <ion-header>
     <ion-navbar>
+        <!-- <button ion-button menuToggle>
+          <ion-icon color="dark" name="menu"></ion-icon>
+        </button> -->
         <ion-title>
             Share Ride
         </ion-title>
-    </ion-navbar>
+        <ion-buttons end>
+          <button ion-button clear (click)="logOut()">
+            <ion-icon color="danger" name="md-power"></ion-icon>
+          </button>
+        </ion-buttons>
+      </ion-navbar>
 </ion-header>
 
 <ion-content>
-    <!-- The world is your oyster.
-    <p>
-      If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-    </p> -->
     <div class="map-wrapper">
         <map></map>
     </div>

@@ -86,7 +86,8 @@ export class MapComponent implements OnInit {
 
   findRidesNearby(location: LatLng){
     var locations = this.generateRandomPoints(location);
-    var icon =  "https://png.icons8.com/barber-chair/color/48";
+   // var icon =  "https://png.icons8.com/barber-chair/color/48";
+    var icon =  "https://png.icons8.com/swipe-down/androidL/35/000000";
     var self = this;
     locations.forEach(l => self.drawCustomMarker(l,self.map,icon));
   }
@@ -114,7 +115,8 @@ export class MapComponent implements OnInit {
     new google.maps.Marker({
       position: location,
       map: map,
-      icon: icon
+      icon: icon,
+      animation: google.maps.Animation.DROP
     });
   }
 
@@ -148,10 +150,10 @@ export class MapComponent implements OnInit {
     var points = new Array();
     for(let i = 0; i < Math.floor(Math.random()*16+4); i++){
       var spherical = google.maps.geometry.spherical;
-      var north = spherical.computeOffset(point, this.getRandomRange(0,100), this.getRandomRange(0,89));
-      var west  = spherical.computeOffset(point, this.getRandomRange(200,300), this.getRandomRange(-89,0));
-      var south = spherical.computeOffset(point, this.getRandomRange(300,400), this.getRandomRange(90,180));
-      var east  = spherical.computeOffset(point, this.getRandomRange(400,500), this.getRandomRange(181,270));
+      var north = spherical.computeOffset(point, this.getRandomRange(100,500), this.getRandomRange(0,89));
+      var west  = spherical.computeOffset(point, this.getRandomRange(600,1000), this.getRandomRange(-89,0));
+      var south = spherical.computeOffset(point, this.getRandomRange(1100,1500), this.getRandomRange(90,180));
+      var east  = spherical.computeOffset(point, this.getRandomRange(1600,2000), this.getRandomRange(181,270));
       points.push(north);
       points.push(west);
       points.push(south);
@@ -164,19 +166,23 @@ export class MapComponent implements OnInit {
   sharePostModal() {
     const pickUpModal = this.modalCtrl.create(SharePostPage, { source: lastAddressFound });
     pickUpModal.onDidDismiss(data => {
-      if (data)
+      if (data){
         this.displayRoute(data);
+      }
+
       //this.showSearchRideButton = true;
     });
     this.showSearchRideButton = false;
     pickUpModal.present();
   }
 
-  openModal() {
+  pickUpModal() {
     const pickUpModal = this.modalCtrl.create(PickUpPage, { source: lastAddressFound });
     pickUpModal.onDidDismiss(data => {
-      if (data)
+      if (data){
         this.displayRoute(data);
+        //this.findRidesNearby(currentLocation);
+      }
       this.showSearchRideButton = true;
     });
     this.showSearchRideButton = false;
@@ -218,7 +224,6 @@ export class MapComponent implements OnInit {
     );
     this.calculateAndDisplayRoute(directionsService, directionsDisplay, routeData.source, routeData.destination, routeData.stopover);
     this.do(routeData.source, routeData.destination);
-    this.findRidesNearby(currentLocation);
   }
 
   calculateAndDisplayRoute(directionsService, directionsDisplay, origin, destination, waypoints) {
