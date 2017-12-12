@@ -6,6 +6,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { Platform } from 'ionic-angular';
 import { PickUpPage } from '../../pages/pick-up/pick-up';
 import { SharePostPage } from '../../pages/share-post/share-post';
+import { User } from '../../providers/user/user';
 
 declare var google;
 var lastAddressFound = '';
@@ -33,7 +34,8 @@ export class MapComponent implements OnInit {
     public nav: NavController,
     private diagnostic: Diagnostic,
     private modalCtrl: ModalController,
-    public platform: Platform) {
+    public platform: Platform,
+    public user: User) {
     this.showSearchRideButton = false;
   }
 
@@ -182,6 +184,11 @@ export class MapComponent implements OnInit {
       if (data){
         this.displayRoute(data);
         //this.findRidesNearby(currentLocation);
+        // this.user.x('blah').subscribe(
+        //     (res: any) => {
+
+        //     },
+        //     (err) => console.log(err));
       }
       this.showSearchRideButton = true;
     });

@@ -13,11 +13,15 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { AuthServiceProvider } from '../providers/auth-service/auth-service';
 import { LoginPage } from '../pages/login/login';
-
+import { SignUpPage } from '../pages/sign-up/sign-up';
+import { User } from '../providers/user/user';
+import { Api } from '../providers/api/api';
+import { HttpModule } from '@angular/http';
 @NgModule({
   declarations: [
     MyApp,
     LoginPage,
+    SignUpPage,
     HomePage,
     PickUpPage,
     SharePostPage,
@@ -25,6 +29,7 @@ import { LoginPage } from '../pages/login/login';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp)
     //IonicModule.forRoot(LoginPage)
   ],
@@ -32,6 +37,7 @@ import { LoginPage } from '../pages/login/login';
   entryComponents: [
     MyApp,
     LoginPage,
+    SignUpPage,
     HomePage,
     PickUpPage,
     SharePostPage
@@ -42,7 +48,9 @@ import { LoginPage } from '../pages/login/login';
     Geolocation,
     Diagnostic,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthServiceProvider
+    AuthServiceProvider,
+    User,
+    Api
   ]
 })
 export class AppModule {}

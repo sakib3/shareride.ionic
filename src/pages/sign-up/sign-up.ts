@@ -2,15 +2,22 @@ import { Component} from '@angular/core';
 import { App, AlertController, LoadingController, Loading } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { HomePage } from '../../pages/home/home';
-import { SignUpPage } from '../../pages/sign-up/sign-up';
+
+
+/**
+ * Generated class for the SignUpPage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
 
 @Component({
-  selector: 'page-login',
-  templateUrl: 'login.html',
+  selector: 'page-sign-up',
+  templateUrl: 'sign-up.html',
 })
-export class LoginPage {
+export class SignUpPage {
   public rootPage: any ;
-  registerCredentials = { email: '', password: ''};
+  registerCredentials = { name:'', email: '', password: ''};
   loading: Loading;
   alert;
   constructor(
@@ -20,9 +27,9 @@ export class LoginPage {
     public auth: AuthServiceProvider) {
   }
 
-  public login(){
+  public signup(){
     this.showLoading();
-    this.auth.login(this.registerCredentials)
+    this.auth.signup(this.registerCredentials)
       .subscribe(data => {
         if(data.token){
           this.navigatePage(HomePage);
@@ -37,11 +44,6 @@ export class LoginPage {
         this.showError('Error occured');
         console.log(err);
       });
-  }
-
-  public createAccount() {
-    this.navigatePage(SignUpPage);
-    //this.showError('Not implemented!');
   }
 
   navigatePage(Page){

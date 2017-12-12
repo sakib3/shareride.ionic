@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/map';
+import { Api } from '../api/api';
 
-export class User{
+export class User {
   name: string;
   password: string;
-  constructor(name:string, password:string) {
+  constructor(name: string, password: string) {
     this.name = name;
     this.password = password;
   }
@@ -14,23 +15,75 @@ export class User{
 
 @Injectable()
 export class AuthServiceProvider {
-  currentUser:User;
+  currentUser: User;
 
-  public login(credentials) {
-    if(credentials.name === null || credentials.password === null)
-      return Observable.throw("Please insert credentials");
-    else
-      return Observable.create(observer => {
-        //check in backend
-        let access = (credentials.name === "user" || credentials.password === "password");
-        this.currentUser = new User("user","password")
-        observer.next(access);
-        observer.complete();
-      });
+  constructor(public api: Api) {
+  }
+
+  public signup(credentials): Observable <any> {
+    return this.api.post('signup', credentials);
+  }
+  public login(credentials): Observable <any> {
+    return this.api.post('signin', credentials)
+    //.map((res:any) => res.json())
+    //.catch((error)=> Observable.throw(error.json().error || 'Server error'));
+
+    // return Observable.create(observer => {
+    //   return this.api.post('signin', credentials)
+    //     .subscribe(
+    //       (res: any) => {
+    //         console.log('res', res.ok);
+    //         let access = res.status == 'success';
+    //         console.log('access', access);
+    //         return Observable.create(o => {
+    //           o.next(access);
+    //           o.complete();
+    //           console.log('complete', access);
+    //         });
+
+    //       },
+    //       (err) => {
+    //         console.log('error ', err._body)
+    //         return Observable.throw("Please insert credentials");
+    //       }
+    //     )
+    // })
+
+
+    //return this.api.post('signin', credentials);
+    // .subscribe(
+    //   (res: any) => {
+    //     if(res.status =='success')
+    //     return Observable.create(observer => {
+    //           //check in backend
+    //           let access = (credentials.name === "user" || credentials.password === "password");
+    //           this.currentUser = new User("user","password")
+    //           observer.next(access);
+    //           observer.complete();
+    //     });
+    //     else
+    //       return Observable.throw("Something went wrong");
+    //   },
+    //   (err) => {
+    //     console.log('error ',err)
+    //     return Observable.throw("Please insert credentials");
+    //   }
+    // );
+    // // console.log(credentials);
+    // // if(credentials.name === null || credentials.password === null)
+    // //   return Observable.throw("Please insert credentials");
+    // // else
+    // //   return Observable.create(observer => {
+    // //     //check in backend
+    // //     let access = (credentials.name === "user" || credentials.password === "password");
+    // //     this.currentUser = new User("user","password")
+    // //     observer.next(access);
+    // //     observer.complete();
+    // //   });
   }
 
   public register(credentials) {
-    if(credentials.name === null || credentials.password === null)
+    if (credentials.name === null || credentials.password === null)
       return Observable.throw("Please insert credentials");
     else
       return Observable.create(observer => {
@@ -45,11 +98,11 @@ export class AuthServiceProvider {
   }
 
   public logout() {
-      return Observable.create(observer => {
-        this.currentUser = null;
-        observer.next(true);
-        observer.complete();
-      });
+    return Observable.create(observer => {
+      this.currentUser = null;
+      observer.next(true);
+      observer.complete();
+    });
   }
 
 }
