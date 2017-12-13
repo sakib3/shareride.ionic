@@ -17,6 +17,7 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
 import { User } from '../providers/user/user';
 import { Api } from '../providers/api/api';
 import { HttpModule } from '@angular/http';
+import { IonicStorageModule } from '@ionic/storage';
 @NgModule({
   declarations: [
     MyApp,
@@ -30,7 +31,8 @@ import { HttpModule } from '@angular/http';
   imports: [
     BrowserModule,
     HttpModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
     //IonicModule.forRoot(LoginPage)
   ],
   bootstrap: [IonicApp],

@@ -2,7 +2,7 @@ import { Component} from '@angular/core';
 import { App, AlertController, LoadingController, Loading } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { HomePage } from '../../pages/home/home';
-
+import { Storage } from '@ionic/storage';
 
 /**
  * Generated class for the SignUpPage page.
@@ -24,7 +24,8 @@ export class SignUpPage {
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public appCtrl: App,
-    public auth: AuthServiceProvider) {
+    public auth: AuthServiceProvider,
+    private storage: Storage) {
   }
 
   public signup(){
@@ -32,7 +33,11 @@ export class SignUpPage {
     this.auth.signup(this.registerCredentials)
       .subscribe(data => {
         if(data.token){
-          this.navigatePage(HomePage);
+          this.storage.set('token', data.token)
+          .then(
+            () =>this.navigatePage(HomePage),
+            (e)=> console.log(e)
+          );
         }
         else{
           this.loading.dismiss();

@@ -3,6 +3,7 @@ import { App, AlertController, LoadingController, Loading } from 'ionic-angular'
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { HomePage } from '../../pages/home/home';
 import { SignUpPage } from '../../pages/sign-up/sign-up';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-login',
@@ -17,7 +18,9 @@ export class LoginPage {
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
     public appCtrl: App,
-    public auth: AuthServiceProvider) {
+    public auth: AuthServiceProvider,
+    private storage: Storage
+  ) {
   }
 
   public login(){
@@ -25,7 +28,11 @@ export class LoginPage {
     this.auth.login(this.registerCredentials)
       .subscribe(data => {
         if(data.token){
-          this.navigatePage(HomePage);
+          this.storage.set('token', data.token)
+          .then(
+            () =>this.navigatePage(HomePage),
+            (e)=> console.log(e)
+          );
         }
         else{
           this.loading.dismiss();
