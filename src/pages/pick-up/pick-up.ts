@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ViewController, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Api } from '../../providers/api/api';
 declare var google;
 var route= {source : '', destination: '', stopover:[]};
 
@@ -39,8 +40,10 @@ export class PickUpPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private viewCtrl: ViewController,
+    public api: Api
     ) {
       this.model = new FindRideModel();
+      this.api.init();
   }
 
   addStopOver(){
@@ -99,7 +102,15 @@ export class PickUpPage {
     let checkedDays = this.days.filter((d)=> d.checked == true);
     if(checkedDays.length > 0)
       this.model.daysOfTravel = checkedDays.map((d) => d.day);
-    console.log(this.model);
+
+    this.api.post('api/rides',this.model)
+    .subscribe((res: any) => {
+      console.log(res)
+    }, (err) => {
+              console.log('error ', err._body)
+
+    });
+    console.log(JSON.stringify(this.model));
     this.viewCtrl.dismiss(route);
   }
 }

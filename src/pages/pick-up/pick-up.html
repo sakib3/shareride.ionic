@@ -52,9 +52,12 @@
             <ion-item>
                   <ion-label>Journey frequency</ion-label>
                   <ion-select [(ngModel)]="model.journeyFrequency">
-                    <ion-option value="driver">Regular</ion-option>
+                    <ion-option value="Regular">Regular</ion-option>
+                    <ion-option value="One-off">One-off</ion-option>
+                    <ion-option value="Custom schedule">Custom schedule</ion-option>
+                    <!-- <ion-option value="driver">Regular</ion-option>
                     <ion-option value="shareRide">One-off</ion-option>
-                    <ion-option value="both">Custom schedule</ion-option>
+                    <ion-option value="both">Custom schedule</ion-option> -->
                   </ion-select>
             </ion-item>
           </ion-col>
