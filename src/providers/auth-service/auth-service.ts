@@ -21,10 +21,10 @@ export class AuthServiceProvider {
   }
 
   public signup(credentials): Observable <any> {
-    return this.api.post('signup', credentials);
+    return this.api.post('signup', credentials, true);
   }
   public login(credentials): Observable <any> {
-    return this.api.post('signin', credentials)
+    return this.api.post('signin', credentials, true)
     //.map((res:any) => res.json())
     //.catch((error)=> Observable.throw(error.json().error || 'Server error'));
 
