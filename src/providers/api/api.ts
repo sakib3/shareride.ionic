@@ -3,12 +3,6 @@ import { Http, Headers, Request, RequestOptions, RequestMethod, RequestOptionsAr
 import 'rxjs/add/operator/map';
 import { Storage } from '@ionic/storage';
 
-/*
-  Generated class for the ApiProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class Api {
   url: string = "https://shareridebd.herokuapp.com";
@@ -25,34 +19,25 @@ export class Api {
       self.token = val;
     });
   }
-  getHeaders(){
-    // let headers = new Headers();
-    // headers.append('Content-Type', 'application/json');
-    // headers.append('Authorization', `Bearer ${this.token}`);
-    // let headers = new Headers({ 'Authorization': 'Bearer ' + this.token });
-    // return new RequestOptions({
-    //   headers
-    //   //headers: headers
-    // });
-    // return {
-    //   headers: headers
-    // };
-    let headersx = new Headers();
-    headersx.append('Content-Type', 'application/x-www-form-urlencoded');
-    headersx.append('Accept', 'application/json');
-    headersx.append('Authorization', 'Bearer ' + this.token);
 
-    return { headers: headersx };
+  getHeaders(){
+    let header = new Headers();
+    header.append('Content-Type', 'application/x-www-form-urlencoded');
+    header.append('Accept', 'application/json');
+    header.append('Authorization', 'Bearer ' + this.token);
+    return { headers: header };
   }
+
   private _buildAuthHeader(): string {
     return 'Bearer ' + this.token;
   }
   get(endPoint: string, params?: any, reqOpts?: any) {
     console.log('Get with token: ', this.token);
     var url = this.url + '/' + endPoint;
-    return this.http
-      .get(url,this.getHeaders())
-      .map(res => res.json());
+    // return this.http
+    //   .get(url,this.getHeaders())
+    //   .map(res => res.json());
+    return this._request(RequestMethod.Get, url);
   }
 
   post(endpoint: string, body: any, reqOpts?: any) {
@@ -60,20 +45,11 @@ export class Api {
 
     var url = this.url + '/' + endpoint;
     if(reqOpts)
-    return this.http
-    .post(url, body, reqOpts)
-    .map(res => res.json());
+      return this.http
+      .post(url, body, reqOpts)
+      .map(res => res.json());
 
-    // console.log(JSON.stringify(this.getHeaders()));
-    //  return this.http
-    // .post(url, body, this.getHeaders())
-    // .map(res => res.json());;
     return this._request(RequestMethod.Post, url, body);
-
-
-    // return this.http
-    //   .post(url, body, reqOpts)
-    //   .map(res => res.json());
   }
 
   private _request(method: RequestMethod, url: string, body?: string, options?: RequestOptionsArgs){
