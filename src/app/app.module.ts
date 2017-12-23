@@ -9,6 +9,7 @@ import { HomePage } from '../pages/home/home';
 import { PickUpPage } from '../pages/pick-up/pick-up';
 import { SharePostPage } from '../pages/share-post/share-post';
 import { ViewShareRidesPage } from '../pages/view-share-rides/view-share-rides';
+import { ProfilePage } from '../pages/profile/profile';
 import { MapComponent } from '../pages/../components/map/map';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
@@ -19,6 +20,7 @@ import { User } from '../providers/user/user';
 import { Api } from '../providers/api/api';
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
+
 @NgModule({
   declarations: [
     MyApp,
@@ -28,6 +30,7 @@ import { IonicStorageModule } from '@ionic/storage';
     PickUpPage,
     SharePostPage,
     ViewShareRidesPage,
+    ProfilePage,
     MapComponent
   ],
   imports: [
@@ -45,7 +48,8 @@ import { IonicStorageModule } from '@ionic/storage';
     HomePage,
     PickUpPage,
     ViewShareRidesPage,
-    SharePostPage
+    SharePostPage,
+    ProfilePage
   ],
   providers: [
     StatusBar,

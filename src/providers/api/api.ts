@@ -5,8 +5,8 @@ import { Storage } from '@ionic/storage';
 
 @Injectable()
 export class Api {
-  url: string = "https://shareridebd.herokuapp.com";
-  //url: string = "http://localhost:8000";
+  //url: string = "https://shareridebd.herokuapp.com";
+  url: string = "http://localhost:8000";
   token: string = null;
   constructor(public http: Http,
     private storage: Storage) {

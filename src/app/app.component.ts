@@ -6,7 +6,7 @@ import { ModalController } from 'ionic-angular';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { ViewShareRidesPage } from '../pages/view-share-rides/view-share-rides';
-
+import { ProfilePage } from '../pages/profile/profile';
 @Component({
   templateUrl: 'app.html'
 })
@@ -18,7 +18,8 @@ export class MyApp {
 
   pages: any[] = [
     //{ title: 'Home', component: 'HomePage' }
-    { title: 'ViewShareRidesPage', icon:'md-share', component: ViewShareRidesPage }
+    { title: 'ProfilePage', icon:'md-person', component: ProfilePage },
+    { title: 'ViewShareRidesPage', icon:'md-share', component: ViewShareRidesPage },
   ]
 
   constructor(platform: Platform,
@@ -34,11 +35,10 @@ export class MyApp {
   }
 
   openPage(page){
-    //console.log(page);
     let modal = this.modalCtrl.create(page.component, { userId: 8675309 });
     modal.present();
-    //this.nav.setRoot(page.component);
   }
+
   openModal(){
     let obj = {userId: '1', name: 'Bob', email: 'bob@unicorn.com'};
     let myModal = this.modalCtrl.create(ViewShareRidesPage, obj);
