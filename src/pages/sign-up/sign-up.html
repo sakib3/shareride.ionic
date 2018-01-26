@@ -12,6 +12,10 @@
           <ion-list inset style="border-radius:0">
 
             <ion-item style="border:none">
+              <ion-input type="text" placeholder="Phone" name="phone" [(ngModel)]="registerCredentials.phone" required></ion-input>
+            </ion-item>
+
+            <ion-item style="border:none">
               <ion-input type="text" placeholder="Name" name="name" [(ngModel)]="registerCredentials.name" required></ion-input>
             </ion-item>
 
@@ -22,6 +26,21 @@
             <ion-item>
               <ion-input type="password" placeholder="Password" name="password" [(ngModel)]="registerCredentials.password" required></ion-input>
             </ion-item>
+
+            <ion-item>
+              <ion-label>Gender</ion-label>
+              <ion-select [(ngModel)]="registerCredentials.gender" name="gender">
+                <ion-option value="Female">Female</ion-option>
+                <ion-option value="Male">Male</ion-option>
+              </ion-select>
+            </ion-item>
+
+            <!-- <ion-list>
+              <ion-item *ngFor="let item of ['Male', 'Female']">
+                <ion-label>{{item}}</ion-label>
+                <ion-checkbox [(ngModel)]="gender" (change)="selectGender($event, item)"></ion-checkbox>
+              </ion-item>
+            </ion-list> -->
 
           </ion-list>
         </ion-col>

@@ -17,9 +17,10 @@ import { Storage } from '@ionic/storage';
 })
 export class SignUpPage {
   public rootPage: any ;
-  registerCredentials = { name:'', email: '', password: ''};
+  registerCredentials = { countrycode:null, phone: null, name:'', email: '', password: '', gender:null};
   loading: Loading;
   alert;
+  public gender;
   constructor(
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,
@@ -28,6 +29,9 @@ export class SignUpPage {
     private storage: Storage) {
   }
 
+  public selectGender($event, item){
+    this.gender = item;
+  }
   public signup(){
     this.showLoading();
     this.auth.signup(this.registerCredentials)
@@ -43,7 +47,6 @@ export class SignUpPage {
           this.loading.dismiss();
           this.showError('Access Denied');
         }
-
       },(err) => {
         this.loading.dismiss();
         this.showError('Error occured');
