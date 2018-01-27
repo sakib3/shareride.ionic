@@ -2,25 +2,35 @@ import { Injectable } from '@angular/core';
 import { Http, Headers, Request, RequestOptions, RequestMethod, RequestOptionsArgs } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Storage } from '@ionic/storage';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class Api {
-  url: string = "https://shareridebd.herokuapp.com";
+  private url: string = "https://shareridebd.herokuapp.com";
   //url: string = "http://localhost:8000";
-  token: string = null;
+  private token: string = null;
   constructor(public http: Http,
     private storage: Storage) {
-    //this.init();
   }
-  init() {
+
+  setToken(): Promise<any> {
     var self = this;
-    this.storage.get('token').then((val) => {
-      console.log('Token set into api service', val);
+    if (self.tokenIsSet())
+      return new Promise((resolve, reject) => {
+        resolve(self.token);
+      });
+
+    return this.storage.get('token').then((val) => {
       self.token = val;
+      return self.token
     });
   }
 
-  getHeaders(){
+  tokenIsSet() {
+    return this.token != null;
+  }
+
+  getHeaders() {
     let header = new Headers();
     header.append('Content-Type', 'application/x-www-form-urlencoded');
     header.append('Accept', 'application/json');
@@ -44,15 +54,15 @@ export class Api {
     console.log('Post with token: ', this.token);
 
     var url = this.url + '/' + endpoint;
-    if(reqOpts)
+    if (reqOpts)
       return this.http
-      .post(url, body, reqOpts)
-      .map(res => res.json());
+        .post(url, body, reqOpts)
+        .map(res => res.json());
 
     return this._request(RequestMethod.Post, url, body);
   }
 
-  private _request(method: RequestMethod, url: string, body?: string, options?: RequestOptionsArgs){
+  private _request(method: RequestMethod, url: string, body?: string, options?: RequestOptionsArgs) {
     let requestOptions = new RequestOptions(Object.assign({
       method: method,
       url: url,
@@ -66,6 +76,6 @@ export class Api {
     requestOptions.headers.append('Content-Type', 'application/json');
 
     requestOptions.headers.append("Authorization", this._buildAuthHeader())
-    return this.http.request(new Request(requestOptions)).map(res=> res.json())
+    return this.http.request(new Request(requestOptions)).map(res => res.json())
   }
 }

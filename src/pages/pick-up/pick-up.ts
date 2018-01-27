@@ -43,7 +43,7 @@ export class PickUpPage {
     public api: Api
     ) {
       this.model = new FindRideModel();
-      this.api.init();
+      this.api.setToken().then(() => {});
   }
 
   addStopOver(){

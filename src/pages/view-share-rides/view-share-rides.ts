@@ -3,7 +3,7 @@ import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { Api } from '../../providers/api/api';
 
 class PostRideModel {
-  _id:any;
+  _id: any;
   name: string;
   from: string;
   destinationLocation: Array<any>;
@@ -29,22 +29,29 @@ export class ViewShareRidesPage {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    public api: Api,) {
-      api.init();
+    public api: Api, ) {
+    //api.init();
   }
 
   ionViewDidLoad() {
+    //while(!this.api.tokenIsSet()){};
     var self = this;
-    console.log('ionViewDidLoad ViewShareRidesPage');
-    this.api.get('api/postRides')
-    .subscribe((res: any) => {
-      self.models = res;
-      console.log(res)
-    }, (err) => {
-      // self.models = [{_id: '5a3544c71847cc05bf55ae48'}];
-      console.log('error ', err._body)
+    self.api.setToken().then((token) => {
+      alert(token);
+      console.log('ionViewDidLoad ViewShareRidesPage');
+      alert('ionViewDidLoad');
+      self.api.get('api/postRides')
+        .subscribe((res: any) => {
+          alert(JSON.stringify(res));
+          self.models = res;
+          console.log(res)
+        }, (err) => {
+          // self.models = [{_id: '5a3544c71847cc05bf55ae48'}];
+          console.log('error ', err._body)
 
-    });
+        });
+    })
+
   }
   closeModal() {
     this.viewCtrl.dismiss();
