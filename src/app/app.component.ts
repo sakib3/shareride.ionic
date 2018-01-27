@@ -23,7 +23,7 @@ export class MyApp {
     { title: 'ViewShareRidesPage', icon:'md-share', component: ViewShareRidesPage },
   ];
 
-  currentUser:any;
+  currentUser:any = {};
   constructor(platform: Platform,
     statusBar: StatusBar,
     splashScreen: SplashScreen,
@@ -43,7 +43,7 @@ export class MyApp {
   }
 
   openPage(page){
-    let modal = this.modalCtrl.create(page.component, { userId: 8675309 });
+    let modal = this.modalCtrl.create(page.component, { user: this.currentUser});
     modal.present();
   }
 

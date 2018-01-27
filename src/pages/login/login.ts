@@ -29,7 +29,7 @@ export class LoginPage {
     this.auth.login(this.registerCredentials)
       .subscribe(data => {
         if(data.token){
-          this.events.publish('user:login', data.user.name, Date.now());
+          this.events.publish('user:login', data.user, Date.now());
           this.storage.set('data', data)
           .then(
             () =>this.navigatePage(HomePage),
