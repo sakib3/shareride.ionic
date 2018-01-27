@@ -20,8 +20,9 @@ export class Api {
         resolve(self.token);
       });
 
-    return this.storage.get('token').then((val) => {
-      self.token = val;
+    return this.storage.get('data').then((data) => {
+      if(data != null)
+        self.token = data.token;
       return self.token
     });
   }

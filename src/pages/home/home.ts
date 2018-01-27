@@ -14,13 +14,13 @@ export class HomePage {
   }
 
   ngOnInit() {
-    this.storage.get('token').then((val) => {
-      console.log('Your token is', val);
+    this.storage.get('data').then((val) => {
+      console.log('Your token is', val.token);
     });
   }
 
   logOut() {
-    this.storage.remove('token').then(()=>{
+    this.storage.remove('data').then(()=>{
       console.log('Storage is clear');
       this.navCtrl.setRoot(LoginPage);
     });

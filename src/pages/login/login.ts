@@ -4,7 +4,7 @@ import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { HomePage } from '../../pages/home/home';
 import { SignUpPage } from '../../pages/sign-up/sign-up';
 import { Storage } from '@ionic/storage';
-
+import { Events } from 'ionic-angular';
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html',
@@ -19,7 +19,8 @@ export class LoginPage {
     public loadingCtrl: LoadingController,
     public appCtrl: App,
     public auth: AuthServiceProvider,
-    private storage: Storage
+    private storage: Storage,
+    private events: Events
   ) {
   }
 
@@ -28,7 +29,8 @@ export class LoginPage {
     this.auth.login(this.registerCredentials)
       .subscribe(data => {
         if(data.token){
-          this.storage.set('token', data.token)
+          this.events.publish('user:login', data.user.name, Date.now());
+          this.storage.set('data', data)
           .then(
             () =>this.navigatePage(HomePage),
             (e)=> console.log(e)
