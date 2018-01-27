@@ -20,6 +20,7 @@ import { User } from '../providers/user/user';
 import { Api } from '../providers/api/api';
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
+import { LoadingProvider } from '../providers/loading/loading';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { IonicStorageModule } from '@ionic/storage';
     AuthServiceProvider,
     User,
     Api,
-    ViewShareRidesPage
+    ViewShareRidesPage,
+    LoadingProvider
   ]
 })
 export class AppModule {}

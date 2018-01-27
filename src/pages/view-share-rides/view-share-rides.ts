@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
 import { Api } from '../../providers/api/api';
+import { LoadingProvider } from '../../providers/loading/loading';
 
 class PostRideModel {
   _id: any;
@@ -26,29 +27,26 @@ class PostRideModel {
 })
 export class ViewShareRidesPage {
   public models = [];
-  constructor(public navCtrl: NavController,
+  constructor(
+    public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
-    public api: Api, ) {
-    //api.init();
-  }
+    public api: Api,
+    public loadingProvider: LoadingProvider
+  ) { }
 
   ionViewDidLoad() {
-    //while(!this.api.tokenIsSet()){};
     var self = this;
+    self.loadingProvider.showLoading();
     self.api.setToken().then((token) => {
-      alert(token);
-      console.log('ionViewDidLoad ViewShareRidesPage');
-      alert('ionViewDidLoad');
       self.api.get('api/postRides')
         .subscribe((res: any) => {
-          alert(JSON.stringify(res));
           self.models = res;
+          self.loadingProvider.stopLoading();
           console.log(res)
         }, (err) => {
-          // self.models = [{_id: '5a3544c71847cc05bf55ae48'}];
+          self.loadingProvider.stopLoading();
           console.log('error ', err._body)
-
         });
     })
 

@@ -1,15 +1,9 @@
 import { Component} from '@angular/core';
-import { App, AlertController, LoadingController, Loading } from 'ionic-angular';
+import { App, AlertController} from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service/auth-service';
 import { HomePage } from '../../pages/home/home';
 import { Storage } from '@ionic/storage';
-
-/**
- * Generated class for the SignUpPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { LoadingProvider } from '../../providers/loading/loading';
 
 @Component({
   selector: 'page-sign-up',
@@ -18,12 +12,11 @@ import { Storage } from '@ionic/storage';
 export class SignUpPage {
   public rootPage: any ;
   registerCredentials = { countrycode:null, phone: null, name:'', email: '', password: '', gender:null};
-  loading: Loading;
   alert;
   public gender;
   constructor(
     public alertCtrl: AlertController,
-    public loadingCtrl: LoadingController,
+    public loadingProvider: LoadingProvider,
     public appCtrl: App,
     public auth: AuthServiceProvider,
     private storage: Storage) {
@@ -33,7 +26,7 @@ export class SignUpPage {
     this.gender = item;
   }
   public signup(){
-    this.showLoading();
+    this.loadingProvider.showLoading();
     this.auth.signup(this.registerCredentials)
       .subscribe(data => {
         if(data.token){
@@ -44,11 +37,11 @@ export class SignUpPage {
           );
         }
         else{
-          this.loading.dismiss();
+          this.loadingProvider.stopLoading();
           this.showError('Access Denied');
         }
       },(err) => {
-        this.loading.dismiss();
+        this.loadingProvider.stopLoading();
         this.showError('Error occured');
         console.log(err);
       });
@@ -58,14 +51,6 @@ export class SignUpPage {
     var root  =this.appCtrl.getRootNav();
     root.popToRoot();
     root.setRoot(Page);
-  }
-
-  showLoading(){
-    this.loading = this.loadingCtrl.create({
-      content: 'Please wait',
-      dismissOnPageChange: true
-    });
-    this.loading.present();
   }
 
   showError(text){
