@@ -90,14 +90,14 @@ export class SharePostPage {
 
     google.maps.event.addListener(autocompleteSource, 'place_changed', function () {
       var sourceLocation = autocompleteSource.getPlace().geometry.location;
-      self.model.sourceLocation = [sourceLocation.lat(), sourceLocation.lng()];
+      self.model.sourceLocation = [sourceLocation.lng(), sourceLocation.lat()];
       route.source = autocompleteSource.getPlace().formatted_address;
       self.model.from = route.source;
     });
 
     google.maps.event.addListener(autocompleteDestination, 'place_changed', function () {
       var destinationLocation = autocompleteDestination.getPlace().geometry.location;
-      self.model.destinationLocation = [destinationLocation.lat(), destinationLocation.lng()];
+      self.model.destinationLocation = [destinationLocation.lng(), destinationLocation.lat()];
       route.destination = autocompleteDestination.getPlace().formatted_address;
       self.model.to = route.destination;
     });

@@ -7,6 +7,7 @@ import { Platform } from 'ionic-angular';
 import { PickUpPage } from '../../pages/pick-up/pick-up';
 import { SharePostPage } from '../../pages/share-post/share-post';
 import { User } from '../../providers/user/user';
+import { Api } from '../../providers/api/api';
 
 declare var google;
 var lastAddressFound = '';
@@ -35,13 +36,37 @@ export class MapComponent implements OnInit {
     private diagnostic: Diagnostic,
     private modalCtrl: ModalController,
     public platform: Platform,
-    public user: User) {
+    public user: User,
+    public api: Api) {
     this.showSearchRideButton = false;
   }
 
   ngOnInit() {
     this.platform.ready()
       .then((readySource) => this.renderCurrentLocation());
+  }
+
+  findPostridesNearMe(){
+
+    var self = this;
+    this.diagnostic.isLocationEnabled()
+      .then((isAvailable) => {
+        if (isAvailable)
+          this.getCurrentLocation()
+            .subscribe(location => {
+              self.api.setToken().then((token) => {
+                self.api.post('api/postRides/nearCurrentLocation', {sourceLocation:[location.longitude,location.latitude]})
+                  .subscribe((res: any) => {
+                    alert(JSON.stringify(res));
+                  }, (err) => {
+                    console.log('error ', err._body)
+                  });
+              })
+            });
+        else
+          alert('Please Turn On Your GPS!');
+      })
+      .catch((e) => alert(JSON.stringify(e)));
   }
 
   renderCurrentLocation() {

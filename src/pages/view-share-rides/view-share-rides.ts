@@ -43,7 +43,7 @@ export class ViewShareRidesPage {
         .subscribe((res: any) => {
           self.models = res;
           self.loadingProvider.stopLoading();
-          console.log(res)
+          alert(JSON.stringify(res));
         }, (err) => {
           self.loadingProvider.stopLoading();
           console.log('error ', err._body)
